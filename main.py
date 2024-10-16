@@ -33,6 +33,7 @@ def measure_distance(image_path):
     points = []
 
     # Function to handle mouse clicks for distance measurement
+    # TODO: rewrite this part so this function is no longer nested - you'll probably need to add the image and the points array as parameters
     def mouse_callback(event, x, y, flags, param):
         if event == cv2.EVENT_LBUTTONDOWN:
             points.append((x, y))
