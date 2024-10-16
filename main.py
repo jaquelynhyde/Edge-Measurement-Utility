@@ -10,6 +10,7 @@
 # Hannah Adeyemi
 
 # Luhana Zorrilla
+# Luhana.zorrilla@ire.minnstate.edu
 
 from pathlib import Path
 
