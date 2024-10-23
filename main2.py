@@ -86,6 +86,7 @@ def json_callback():
 
 # Access a given connected camera
 # A certain keypress should take a snapshot and initiate the edge characterization routine
+# ***it is very important that you release the camera when you're done using it: read the tutorials***
 def camera_controller():
     # crickets
 
@@ -93,6 +94,11 @@ def camera_controller():
 def user_interface():
     # crickets
 
+# Provide a convenient interface *for us* to use and debug the utility
+# See the description above main() for more info on what this could do and subroutines to make
+def debug_user_interface():
+    # crickets
+    
 # Initiate a loop:
 #       Wait for user input:
 #           If (A) - Use test image, go to ()
