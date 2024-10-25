@@ -109,13 +109,20 @@ def debug_user_interface():
     # draw a ui with three panels
 
     wait_time = 25
-    height = 1280
-    width = 1920 # change to grab user resolution? these are just from my monitor -j
+    height = 768
+    width = 1360 # change to grab user resolution? these are just from my monitor -j
+
+    live_capture = True
+    live_contours = True
 
     ui_image = np.zeros((height, width, 3), np.uint8)
 
-    panel_height = height // 4
-    panel_width = width // 4
+    panel_height = height // 2
+    panel_width = width // 2
+
+    last_gray = np.zeros((panel_height, panel_width, 1), np.uint8)
+    last_edge = np.zeros((panel_height, panel_width, 1), np.uint8)
+    last_thresh = np.zeros((panel_height, panel_width, 1), np.uint8)
 
     # TODO: add bit that runs the camera controller...
 
@@ -127,29 +134,60 @@ def debug_user_interface():
         print('Unable to open camera')
         exit()
 
-    while(1):
+    while 1:
         ret, frame = cap.read()
 
         if not ret:
             print('Unable to read frame')
             break
 
-        gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-        edges = detect_edges(gray)
+        if live_capture:
+            gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+            last_gray = gray.copy()
+            ret, thresh = cv.threshold(gray, 127, 255, cv.THRESH_BINARY)
+            last_thresh = thresh.copy()
+            edges = detect_edges(gray) #check and see if you get better edges off the threshholded images?
+            last_edge = edges.copy()
+        else:
+            gray = last_gray.copy()
+            thresh = last_thresh.copy()
+            edges = last_edge.copy() # need to test if .copy() is actually more efficient
+
+        gray = cv.cvtColor(gray, cv.COLOR_GRAY2BGR)
+        edges = cv.cvtColor(edges, cv.COLOR_GRAY2BGR)
+
+        if live_contours:
+            contours, hierarchy = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+
+        thresh = cv.cvtColor(thresh, cv.COLOR_GRAY2BGR)
+
+        if live_contours:
+            cv.drawContours(thresh, contours, -1, (0,255,0),2)
 
         # its unclear if this needs to happen this way and how it affects performance
+        # the whole business of resizing and composing images is probably pretty inefficient
         r_frame = cv.resize(frame, (panel_width, panel_height))
-        r_gray = cv.cvtColor(cv.resize(gray, (panel_width, panel_height)),cv.COLOR_GRAY2BGR)
-        r_edges = cv.cvtColor(cv.resize(edges, (panel_width, panel_height)),cv.COLOR_GRAY2BGR)
+        r_gray = cv.resize(gray, (panel_width, panel_height))
+        r_edges = cv.resize(edges, (panel_width, panel_height))
+        r_thresh = cv.resize(thresh, (panel_width, panel_height))
 
-        ui_image[10:10+panel_height, 10:10+panel_width] = r_frame
-        ui_image[10+panel_height:10+2*panel_height, 10:10+panel_width] = r_gray
-        ui_image[10+panel_height:10+2*panel_height, 10+panel_width:10+2*panel_width] = r_edges
+        ui_image[0:panel_height, 0:panel_width] = r_frame
+        ui_image[0:panel_height, panel_width:width] = r_thresh
+        ui_image[panel_height:height, 0:panel_width] = r_gray
+        ui_image[panel_height:height, panel_width:width] = r_edges
 
         cv.imshow('EMU - Debug', ui_image)
 
-        if cv.waitKey(wait_time) & 0xFF == 27:
+        input_key = cv.waitKey(wait_time)
+
+        if input_key & 0xFF == 27:
             break
+        elif input_key & 0xFF == ord('c'):
+            live_capture = not live_capture
+        elif input_key & 0xFF == ord('d'):
+            live_contours = not live_contours
+
+
 
     cap.release()
     cv.destroyAllWindows()
