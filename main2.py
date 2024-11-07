@@ -64,6 +64,7 @@ def index_areas(image):
 #           The length in mm of a square in the target
 # Return:   The pixel-to-mm ratio of the plane of the calibration target
 def calibrate_image(image, length):
+    image = cv2.imread("C:\Users\itoro\OneDrive\Pictures\Saved Pictures\cropped_test_image.jpg")
     return 0
     # crickets
 
