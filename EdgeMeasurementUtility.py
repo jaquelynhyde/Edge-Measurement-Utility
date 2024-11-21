@@ -32,7 +32,7 @@ class EdgeMeasurementUtility:
         self.last_image = None
         self.json_data = None
         self.mm_pixel_ratio = 1
-        self.use_loaded_image = False
+        self.use_loaded_image = True
         self.loaded_image = cv.imread(cv.samples.findFile("Test_Image.jpg"))
         
     @staticmethod
@@ -60,6 +60,21 @@ class EdgeMeasurementUtility:
         
         return edges
     
+    # Given:    An image
+    # Return:   The calibration matrix and the corners of the chessboard
+    @staticmethod
+    def detect_calibration_target(image):
+        return 1
+        
+    # Placeholder for the portion of the utility that recognizes parts of the
+    # solar panel and determines which contours belong to the components we are
+    # interested in measuring
+    def feature_detection():
+        return 1
+    
+    # Interface for selecting contours in self.image based on x y location
+    # The largest at x y is selected, to avoid selecting two with one click
+    # When two contours are selected, measures distances between them/;'''''''''''''''''''''..
     def select_contour(self, x, y): 
         print('select_contour at x: ' + str(x) + ' / y: ' + str(y))   
         
@@ -145,24 +160,24 @@ class EdgeMeasurementUtility:
                         dtype = np.int32)
                         
                 if self.closest_hor_contour is not None:
-                    cv.drawContours(self.image, [self.closest_hor_contour], -1, (255, 0, 0), thickness = cv.FILLED)
+                    cv.drawContours(self.image, [self.closest_hor_contour], -1, (0, 255, 255), thickness = cv.FILLED)
                     x, y, w, h = cv.boundingRect(self.closest_hor_contour)
-                    cv.putText(self.image, 'closest horizontal distance : ' + str(min_hor_dist) + ' pixels', (0, 30), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv.LINE_AA)
+                    cv.putText(self.image, 'closest horizontal distance : ' + str(min_hor_dist) + ' pixels', (0, 30), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 1, cv.LINE_AA)
                         
                 if self.closest_ver_contour is not None:
-                    cv.drawContours(self.image, [self.closest_ver_contour], -1, (255, 0, 0), thickness = cv.FILLED)
+                    cv.drawContours(self.image, [self.closest_ver_contour], -1, (0, 255, 255), thickness = cv.FILLED)
                     x, y, w, h = cv.boundingRect(self.closest_ver_contour)
-                    cv.putText(self.image, 'closest vertical distance : ' + str(min_ver_dist) + ' pixels', (0, 60), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv.LINE_AA)
+                    cv.putText(self.image, 'closest vertical distance : ' + str(min_ver_dist) + ' pixels', (0, 60), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 1, cv.LINE_AA)
                         
                 if self.furthest_hor_contour is not None:
                     cv.drawContours(self.image, [self.furthest_hor_contour], -1, (0, 0, 255), thickness = cv.FILLED)
                     x, y, w, h = cv.boundingRect(self.furthest_hor_contour)
-                    cv.putText(self.image, 'furthest horizontal distance : ' + str(max_hor_dist) + ' pixels', (0, 90), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv.LINE_AA)
+                    cv.putText(self.image, 'furthest horizontal distance : ' + str(max_hor_dist) + ' pixels', (0, 90), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1, cv.LINE_AA)
                         
                 if self.furthest_ver_contour is not None:
                     cv.drawContours(self.image, [self.furthest_ver_contour], -1, (0, 0, 255), thickness = cv.FILLED)
                     x, y, w, h = cv.boundingRect(self.furthest_ver_contour)
-                    cv.putText(self.image, 'furthest vertical distance : ' + str(max_ver_dist) + ' pixels', (0, 120), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv.LINE_AA)
+                    cv.putText(self.image, 'furthest vertical distance : ' + str(max_ver_dist) + ' pixels', (0, 120), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1, cv.LINE_AA)
                         
                 distances = { 
                     "min_horizontal_distance": float(min_hor_dist * self.mm_pixel_ratio),
@@ -240,6 +255,7 @@ class EdgeMeasurementUtility:
                 self.contours, self.hierarchy = cv.findContours(self.edges, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
                 self.edges_color = cv.cvtColor(self.edges, cv.COLOR_GRAY2BGR) 
                 cv.drawContours(self.edges_color, self.contours, -1, (0,255,0), thickness = 1)
+                print('Contours detected: ' + str(len(self.contours)))
             else:
                 self.edges_color = cv.cvtColor(self.edges, cv.COLOR_GRAY2BGR) 
     
