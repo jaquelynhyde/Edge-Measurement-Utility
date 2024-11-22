@@ -43,29 +43,71 @@ class EdgeMeasurementUtility:
     def vertical_distance(point1, point2):
         return abs(point1[1] - point2[1])
         
-    # Given:    An image with a calibration target
+    # Given:    An image with a calibration target with (rows * cols) squares
+    #           Each square's dimensions are (square_mm * square_mm) 
     # Return:   The ratio of millimeters to pixels in the image
     @staticmethod
-    def calibrate_mm_to_pixel_ratio():
-        return 1
+    def calibrate_mm_to_pixel_ratio(image, rows, cols, square_mm):
+        termination_criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+        
+        objp = np.zeros((rows*cols,3), np.float32)
+        objp[:,:2] = np.mgrid[0:rows,0:cols].T.reshape(-1,2)
+        
+        objpoints = [] # points in 3d space (real world)
+        imgpoints = [] # points in 2d space (image plane)
+        
+        gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+        
+        ret, corners = cv.findChessboardCorners(gray, (rows, cols), None)
+        
+        if ret == True:
+            objpoints.append(objp)
+            
+            corners2 = cv.cornerSubPix(gray, corners, (11,11), (-1,-1), termination_criteria)
+            
+            imgpoints.append(corners2)
+            
+            total_horizontal_distance = 0
+            total_vertical_distance = 0
+            num_horizontal_distances = 0
+            num_vertical_distances = 0
+            
+            for r in range(rows):
+                for c in range(cols):
+                    if c < cols - 1:
+                        point1 = corners2[r * cols + c][0]
+                        point2 = corners2[r * cols + c + 1][0]
+                        distance = np.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
+                        total_horizontal_distance += distance
+                        num_horizontal_distances += 1
+                    if r < rows - 1:
+                        point1 = corners2[r * cols + c][0]
+                        point2 = corners2[(r + 1) * cols + c][0]
+                        distance = np.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
+                        total_vertical_distance += distance
+                        num_vertical_distances += 1 
+                        
+            average_horizontal_distance = total_horizontal_distance / num_horizontal_distances
+            average_vertical_distance = total_vertical_distance / num_vertical_distances 
+            average_distance = ( average_horizontal_distance + average_vertical_distance ) / 2
+            average_distance_mm = square_mm / average_distance
+            
+            print(average_distance_mm)
+            
+            return average_distance_mm
+                
+        return -1
     
     # Given:    An image
     # Return:   An edge-detected image    
     @staticmethod
     def detect_edges(image, min_val, max_val):
-        print('Detecting edges...')
         gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
         
         edges = cv.Canny(gray, min_val, max_val)
         
         return edges
     
-    # Given:    An image
-    # Return:   The calibration matrix and the corners of the chessboard
-    @staticmethod
-    def detect_calibration_target(image):
-        return 1
-        
     # Placeholder for the portion of the utility that recognizes parts of the
     # solar panel and determines which contours belong to the components we are
     # interested in measuring
@@ -162,22 +204,22 @@ class EdgeMeasurementUtility:
                 if self.closest_hor_contour is not None:
                     cv.drawContours(self.image, [self.closest_hor_contour], -1, (0, 255, 255), thickness = cv.FILLED)
                     x, y, w, h = cv.boundingRect(self.closest_hor_contour)
-                    cv.putText(self.image, 'closest horizontal distance : ' + str(min_hor_dist) + ' pixels', (0, 30), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 1, cv.LINE_AA)
+                    cv.putText(self.image, 'closest horizontal distance : ' + str(min_hor_dist) + ' mm', (0, 30), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 1, cv.LINE_AA)
                         
                 if self.closest_ver_contour is not None:
                     cv.drawContours(self.image, [self.closest_ver_contour], -1, (0, 255, 255), thickness = cv.FILLED)
                     x, y, w, h = cv.boundingRect(self.closest_ver_contour)
-                    cv.putText(self.image, 'closest vertical distance : ' + str(min_ver_dist) + ' pixels', (0, 60), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 1, cv.LINE_AA)
+                    cv.putText(self.image, 'closest vertical distance : ' + str(min_ver_dist) + ' mm', (0, 60), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 1, cv.LINE_AA)
                         
                 if self.furthest_hor_contour is not None:
                     cv.drawContours(self.image, [self.furthest_hor_contour], -1, (0, 0, 255), thickness = cv.FILLED)
                     x, y, w, h = cv.boundingRect(self.furthest_hor_contour)
-                    cv.putText(self.image, 'furthest horizontal distance : ' + str(max_hor_dist) + ' pixels', (0, 90), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1, cv.LINE_AA)
+                    cv.putText(self.image, 'furthest horizontal distance : ' + str(max_hor_dist) + ' mm', (0, 90), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1, cv.LINE_AA)
                         
                 if self.furthest_ver_contour is not None:
                     cv.drawContours(self.image, [self.furthest_ver_contour], -1, (0, 0, 255), thickness = cv.FILLED)
                     x, y, w, h = cv.boundingRect(self.furthest_ver_contour)
-                    cv.putText(self.image, 'furthest vertical distance : ' + str(max_ver_dist) + ' pixels', (0, 120), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1, cv.LINE_AA)
+                    cv.putText(self.image, 'furthest vertical distance : ' + str(max_ver_dist) + ' mm', (0, 120), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1, cv.LINE_AA)
                         
                 distances = { 
                     "min_horizontal_distance": float(min_hor_dist * self.mm_pixel_ratio),
@@ -231,6 +273,8 @@ class EdgeMeasurementUtility:
         f_height, f_width, channels = frame.shape
         
         cv.resizeWindow(self.window_name, f_height, f_width)
+        
+        self.mm_pixel_ratio = self.calibrate_mm_to_pixel_ratio(self.image, 7, 10, 15)
 
         while True:            
             if not measurement_mode:
