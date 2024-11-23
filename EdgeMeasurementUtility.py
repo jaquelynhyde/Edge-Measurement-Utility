@@ -92,7 +92,7 @@ class EdgeMeasurementUtility:
             average_distance = ( average_horizontal_distance + average_vertical_distance ) / 2
             average_distance_mm = square_mm / average_distance
             
-            print(average_distance_mm)
+            print('mm to pixel ratio : ' + str(average_distance_mm))
             
             return average_distance_mm
                 
@@ -204,22 +204,22 @@ class EdgeMeasurementUtility:
                 if self.closest_hor_contour is not None:
                     cv.drawContours(self.image, [self.closest_hor_contour], -1, (0, 255, 255), thickness = cv.FILLED)
                     x, y, w, h = cv.boundingRect(self.closest_hor_contour)
-                    cv.putText(self.image, 'closest horizontal distance : ' + str(min_hor_dist) + ' mm', (0, 30), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 1, cv.LINE_AA)
+                    cv.putText(self.image, 'closest horizontal distance : ' + str(min_hor_dist * self.mm_pixel_ratio) + ' mm', (0, 30), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 1, cv.LINE_AA)
                         
                 if self.closest_ver_contour is not None:
                     cv.drawContours(self.image, [self.closest_ver_contour], -1, (0, 255, 255), thickness = cv.FILLED)
                     x, y, w, h = cv.boundingRect(self.closest_ver_contour)
-                    cv.putText(self.image, 'closest vertical distance : ' + str(min_ver_dist) + ' mm', (0, 60), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 1, cv.LINE_AA)
+                    cv.putText(self.image, 'closest vertical distance : ' + str(min_ver_dist * self.mm_pixel_ratio) + ' mm', (0, 60), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 1, cv.LINE_AA)
                         
                 if self.furthest_hor_contour is not None:
                     cv.drawContours(self.image, [self.furthest_hor_contour], -1, (0, 0, 255), thickness = cv.FILLED)
                     x, y, w, h = cv.boundingRect(self.furthest_hor_contour)
-                    cv.putText(self.image, 'furthest horizontal distance : ' + str(max_hor_dist) + ' mm', (0, 90), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1, cv.LINE_AA)
+                    cv.putText(self.image, 'furthest horizontal distance : ' + str(max_hor_dist * self.mm_pixel_ratio) + ' mm', (0, 90), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1, cv.LINE_AA)
                         
                 if self.furthest_ver_contour is not None:
                     cv.drawContours(self.image, [self.furthest_ver_contour], -1, (0, 0, 255), thickness = cv.FILLED)
                     x, y, w, h = cv.boundingRect(self.furthest_ver_contour)
-                    cv.putText(self.image, 'furthest vertical distance : ' + str(max_ver_dist) + ' mm', (0, 120), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1, cv.LINE_AA)
+                    cv.putText(self.image, 'furthest vertical distance : ' + str(max_ver_dist * self.mm_pixel_ratio) + ' mm', (0, 120), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1, cv.LINE_AA)
                         
                 distances = { 
                     "min_horizontal_distance": float(min_hor_dist * self.mm_pixel_ratio),
@@ -256,7 +256,7 @@ class EdgeMeasurementUtility:
         
         cv.namedWindow(self.window_name)
 
-        cap = cv.VideoCapture(0)
+        cap = cv.VideoCapture(1)
         
         if not cap.isOpened():
             print('Unable to open camera')
