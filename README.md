@@ -2,10 +2,10 @@
 
 Created by Team Heliene USA as part of the IRE Fall 2024 Industry Design Project\
 
--Elvis Enang
--Hannah Adeyemi
--Luhana Zorrilla
--Jaquelyn E Hyde
+ - Elvis Enang
+ - Hannah Adeyemi
+ - Luhana Zorrilla
+ - Jaquelyn E Hyde
 
 # How to Use This Software (Standalone)
 1. Ensure your device is connected to a camera
@@ -86,10 +86,10 @@ Instructions for using OpenCV with Python may be found at:
 
 https://docs.opencv.org/4.x/d6/d00/tutorial_py_root.html
 
--Python 3.12
--numpy 2.1.2
--matplotlib 3.9.2
--opencv 4.10.0.84
+ - Python 3.12
+ - numpy 2.1.2
+ - matplotlib 3.9.2
+ - opencv 4.10.0.84
 
 # Credits / Further Reading
 https://docs.opencv.org/4.x/d6/d00/tutorial_py_root.html
