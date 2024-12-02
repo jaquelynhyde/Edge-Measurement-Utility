@@ -1,10 +1,11 @@
 # Edge Measurement Utility
 
-Created by Team Heliene USA as part of the IRE Fall 2024 Industry Design Project
-Elvis Enang
-Hannah Adeyemi
-Luhana Zorrilla
-Jaquelyn E Hyde
+Created by Team Heliene USA as part of the IRE Fall 2024 Industry Design Project\
+
+-Elvis Enang
+-Hannah Adeyemi
+-Luhana Zorrilla
+-Jaquelyn E Hyde
 
 # How to Use This Software (Standalone)
 1. Ensure your device is connected to a camera
@@ -18,26 +19,17 @@ Jaquelyn E Hyde
 
 # Description
 
-The Edge Measurement Utility (EMU) is a class-based implementation of the OpenCV library
-built to take an input image, find contours within it, and allow the user to locate
-contours at x/y points in the image, automatically measuring between them and reporting
-the minimum and maximum horizontal and vertical distances. 
+The Edge Measurement Utility (EMU) is a class-based implementation of the OpenCV library built to take an input image, find contours within it, and allow the user to locate contours at x/y points in the image, automatically measuring between them and reporting the minimum and maximum horizontal and vertical distances. 
 
-The Edge Measurement Utility may be ran as standalone software, in which case it will
-open a window and a connected camera, creating a live feed of images from which snapshots
-may be taken for edge measurement. By changing the self.use_uploaded_image flag, it can instead
-use an image named in self.loaded_image
+The Edge Measurement Utility may be ran as standalone software, in which case it will open a window and a connected camera, creating a live feed of images from which snapshots may be taken for edge measurement. By changing the self.use_uploaded_image flag, it can instead use an image named in self.loaded_image
 
-For the current standalone user interface, EMU assumes that your initial image on startup contains a 
-checkerboard calibration target like the default checkerboard target generated here: 
+For the current standalone user interface, EMU assumes that your initial image on startup contains a checkerboard calibration target like the default checkerboard target generated here: 
 
 https://calib.io/pages/camera-calibration-pattern-generator
 
 All further images should be taken with the orientation of the camera and the imaged surface remaining the same
 
-i.e. the camera should be oriented so the camera lens and the solar panel are parallel, with a printed
-calibration target visible in the first image, layed on the same surface and at the same level as the panel
-All further images should be taken with the camera only moving left/right relative to the panel, not up/down
+i.e. the camera should be oriented so the camera lens and the solar panel are parallel, with a printed calibration target visible in the first image, layed on the same surface and at the same level as the panel. All further images should be taken with the camera only moving left/right relative to the panel, not up/down.
 
 EMU is also usable as an object within other software. However, some changes to code may be necessary. Reccomendations for future work are detailed in 'Variable and Function Descriptions'
 
@@ -94,10 +86,10 @@ Instructions for using OpenCV with Python may be found at:
 
 https://docs.opencv.org/4.x/d6/d00/tutorial_py_root.html
 
-Python 3.12
-numpy 2.1.2
-matplotlib 3.9.2
-opencv 4.10.0.84
+-Python 3.12
+-numpy 2.1.2
+-matplotlib 3.9.2
+-opencv 4.10.0.84
 
 # Credits / Further Reading
 https://docs.opencv.org/4.x/d6/d00/tutorial_py_root.html
