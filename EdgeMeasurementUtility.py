@@ -75,14 +75,14 @@ class EdgeMeasurementUtility:
             for r in range(rows):
                 for c in range(cols):
                     if c < cols - 1:
-                        point1 = corners2[r * cols + c][0]
-                        point2 = corners2[r * cols + c + 1][0]
+                        point1 = corners2[c * rows + r][0]
+                        point2 = corners2[(c + 1) * rows + r][0]
                         distance = np.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
                         total_horizontal_distance += distance
                         num_horizontal_distances += 1
                     if r < rows - 1:
-                        point1 = corners2[r * cols + c][0]
-                        point2 = corners2[(r + 1) * cols + c][0]
+                        point1 = corners2[c * rows + r][0]
+                        point2 = corners2[c * rows + r + 1][0]
                         distance = np.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
                         total_vertical_distance += distance
                         num_vertical_distances += 1 
